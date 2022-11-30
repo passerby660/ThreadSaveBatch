@@ -1,0 +1,14 @@
+server:
+  port: 8091
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf8&useSSL=false&zeroDateTimeBehavior=convertToNull&tinyInt1isBit=false&serverTimezone=Asia/Shanghai&useAffectedRows=true&allowMultiQueries=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+mybatis-plus:
+  mapper-locations: classpath:/mapper/xml/*.xml
+

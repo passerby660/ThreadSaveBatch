@@ -7,6 +7,7 @@ import com.example.demo.entity.AuthDemo;
  * @author elliott
  */
 public interface ITriggerService extends BaseService<AuthDemo> {
+
     /**
      * 数据插入
      */

@@ -17,8 +17,6 @@ public class TriggerController {
     @Resource
     private ITriggerService triggerService;
 
-//    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(32);
-
     @GetMapping
     public String insert() throws InterruptedException {
         triggerService.insert2();

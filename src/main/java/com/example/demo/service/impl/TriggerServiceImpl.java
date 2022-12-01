@@ -7,7 +7,6 @@ import com.example.demo.service.ITriggerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -21,7 +20,8 @@ import java.util.concurrent.*;
 @Service
 @Slf4j
 public class TriggerServiceImpl extends BaseServiceImpl<TriggerMapper, AuthDemo> implements ITriggerService {
-    private static final ExecutorService EXECUTOR_SERVICE = new ThreadPoolExecutor(24, 24, 0L, TimeUnit.DAYS, new LinkedBlockingQueue<Runnable>());
+
+    private static final ExecutorService EXECUTOR_SERVICE = new ThreadPoolExecutor(15, 15, 0L, TimeUnit.DAYS, new LinkedBlockingQueue<Runnable>());
 
     LinkedBlockingQueue<List<AuthDemo>> authListList = new LinkedBlockingQueue<>();
     List<AuthDemo> authList;
@@ -47,11 +47,9 @@ public class TriggerServiceImpl extends BaseServiceImpl<TriggerMapper, AuthDemo>
         System.out.println("triggerField1");
         EXECUTOR_SERVICE.submit(this::saveField1);
         EXECUTOR_SERVICE.submit(this::saveField1);
-        EXECUTOR_SERVICE.submit(this::saveField1);
     }
     void triggerField2(){
         System.out.println("triggerField2");
-        EXECUTOR_SERVICE.submit(this::saveField2);
         EXECUTOR_SERVICE.submit(this::saveField2);
         EXECUTOR_SERVICE.submit(this::saveField2);
     }
@@ -59,14 +57,9 @@ public class TriggerServiceImpl extends BaseServiceImpl<TriggerMapper, AuthDemo>
         System.out.println("triggerField3");
         EXECUTOR_SERVICE.submit(this::saveNode);
         EXECUTOR_SERVICE.submit(this::saveNode);
-        EXECUTOR_SERVICE.submit(this::saveNode);
     }
     void triggerField4(){
         System.out.println("triggerField4");
-        EXECUTOR_SERVICE.submit(this::assemblyData);
-        EXECUTOR_SERVICE.submit(this::assemblyData);
-        EXECUTOR_SERVICE.submit(this::assemblyData);
-        EXECUTOR_SERVICE.submit(this::assemblyData);
         EXECUTOR_SERVICE.submit(this::assemblyData);
         EXECUTOR_SERVICE.submit(this::assemblyData);
         EXECUTOR_SERVICE.submit(this::assemblyData);

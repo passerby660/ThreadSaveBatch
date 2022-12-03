@@ -1,12 +1,15 @@
 package com.example.demo.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.example.demo.common.BaseServiceImpl;
+import com.example.demo.common.Redis;
 import com.example.demo.entity.AuthDemo;
 import com.example.demo.mapper.TriggerMapper;
 import com.example.demo.service.ITriggerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
@@ -21,10 +24,13 @@ public class TriggerServiceImpl extends BaseServiceImpl<TriggerMapper, AuthDemo>
 
     private static final ExecutorService EXECUTOR_SERVICE = new ThreadPoolExecutor(15, 15, 0L, TimeUnit.DAYS, new LinkedBlockingQueue<Runnable>());
 
-    LinkedBlockingQueue<List<AuthDemo>> authListList = new LinkedBlockingQueue<>();
+//    LinkedBlockingQueue<List<AuthDemo>> authListList = new LinkedBlockingQueue<>();
     LinkedBlockingQueue<String> field1s = new LinkedBlockingQueue<>();
     LinkedBlockingQueue<Integer> field2s = new LinkedBlockingQueue<>();
     LinkedBlockingQueue<Integer> nodes = new LinkedBlockingQueue<>();
+
+    @Resource
+    Redis redis;
 
     int count = 0;
 
@@ -65,13 +71,13 @@ public class TriggerServiceImpl extends BaseServiceImpl<TriggerMapper, AuthDemo>
         EXECUTOR_SERVICE.submit(this::assemblyData);
         EXECUTOR_SERVICE.submit(this::assemblyData);
         EXECUTOR_SERVICE.submit(this::assemblyData);
-        EXECUTOR_SERVICE.submit(this::assemblyData);
-        EXECUTOR_SERVICE.submit(this::assemblyData);
     }
 
     void triggerField5() throws InterruptedException {
         System.out.println("triggerField5");
         Thread.sleep(9999);
+        EXECUTOR_SERVICE.submit(this::saveList);
+        EXECUTOR_SERVICE.submit(this::saveList);
         EXECUTOR_SERVICE.submit(this::saveList);
     }
 
@@ -89,7 +95,7 @@ public class TriggerServiceImpl extends BaseServiceImpl<TriggerMapper, AuthDemo>
                     authList.add(authDemo);
                     System.out.println(Thread.currentThread().getName() + ": assemblyData");
                 } while (authList.size() < 999);
-                authListList.offer(authList);
+                redis.rpush("assemblyData", authList);
             } else {
                 log.info("assemblyData + count:{}", count);
             }
@@ -129,13 +135,14 @@ public class TriggerServiceImpl extends BaseServiceImpl<TriggerMapper, AuthDemo>
 
     void saveList() {
         while (true) {
-            if (count < 200000 && authListList.size() > 1) {
-                this.saveBatch(authListList.remove());
+            List<AuthDemo> authList = redis.lPop("assemblyData");
+            if (count < 200000 && CollectionUtil.isNotEmpty(authList)) {
+                this.saveBatch(authList);
                 System.out.println(Thread.currentThread().getName() + ": saveBatch");
                 count++;
                 System.out.println("===============================================================");
             } else {
-                System.out.printf("saveList:%d --- authListList:%d", count, authListList.size());
+                System.out.printf("saveList:%d --- authList:%d", count, authList.size());
             }
         }
     }

@@ -8,7 +8,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
 
-    ##### ¡¨Ω”≥ÿ≈‰÷√ #######
     druid:
       filters: stat,wall,log4j2
       web-stat-filter:
@@ -20,9 +19,15 @@ spring:
         login-username: admin
         login-password: 123456
 
-  #### Redis
   redis:
     host: 127.0.0.1
+    port: 6379
+    connect-timeout: 500
+    database: 0
+
+  main:
+    allow-bean-definition-overriding: true
+
 
   mvc:
     pathmatch:

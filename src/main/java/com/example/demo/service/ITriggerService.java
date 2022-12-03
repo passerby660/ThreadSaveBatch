@@ -11,5 +11,5 @@ public interface ITriggerService extends BaseService<AuthDemo> {
     /**
      * 数据插入
      */
-    void insert2() throws InterruptedException;
+    void insert() throws InterruptedException;
 }

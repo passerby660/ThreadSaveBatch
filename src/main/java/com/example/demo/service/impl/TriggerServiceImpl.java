@@ -7,11 +7,9 @@ import com.example.demo.service.ITriggerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.Vector;
 import java.util.concurrent.*;
 
 /**
@@ -24,41 +22,39 @@ public class TriggerServiceImpl extends BaseServiceImpl<TriggerMapper, AuthDemo>
     private static final ExecutorService EXECUTOR_SERVICE = new ThreadPoolExecutor(15, 15, 0L, TimeUnit.DAYS, new LinkedBlockingQueue<Runnable>());
 
     LinkedBlockingQueue<List<AuthDemo>> authListList = new LinkedBlockingQueue<>();
-    List<AuthDemo> authList;
-
-    LinkedBlockingQueue<String> field1 = new LinkedBlockingQueue<>();
-    LinkedBlockingQueue<Integer> field2 = new LinkedBlockingQueue<>();
-    LinkedBlockingQueue<Integer> node = new LinkedBlockingQueue<>();
+    LinkedBlockingQueue<String> field1s = new LinkedBlockingQueue<>();
+    LinkedBlockingQueue<Integer> field2s = new LinkedBlockingQueue<>();
+    LinkedBlockingQueue<Integer> nodes = new LinkedBlockingQueue<>();
 
     int count = 0;
 
 
     @Override
-    public void insert2() throws InterruptedException {
+    public void insert() throws InterruptedException {
         triggerField1();
         triggerField2();
         triggerField3();
-        Thread.sleep(9000);
         triggerField4();
         triggerField5();
     }
 
-    void triggerField1(){
+    void triggerField1() {
         System.out.println("triggerField1");
         EXECUTOR_SERVICE.submit(this::saveField1);
-        EXECUTOR_SERVICE.submit(this::saveField1);
     }
-    void triggerField2(){
+
+    void triggerField2() {
+
         System.out.println("triggerField2");
         EXECUTOR_SERVICE.submit(this::saveField2);
-        EXECUTOR_SERVICE.submit(this::saveField2);
     }
-    void triggerField3(){
+
+    void triggerField3() {
         System.out.println("triggerField3");
         EXECUTOR_SERVICE.submit(this::saveNode);
-        EXECUTOR_SERVICE.submit(this::saveNode);
     }
-    void triggerField4(){
+
+    void triggerField4() {
         System.out.println("triggerField4");
         EXECUTOR_SERVICE.submit(this::assemblyData);
         EXECUTOR_SERVICE.submit(this::assemblyData);
@@ -70,53 +66,78 @@ public class TriggerServiceImpl extends BaseServiceImpl<TriggerMapper, AuthDemo>
         EXECUTOR_SERVICE.submit(this::assemblyData);
         EXECUTOR_SERVICE.submit(this::assemblyData);
         EXECUTOR_SERVICE.submit(this::assemblyData);
+        EXECUTOR_SERVICE.submit(this::assemblyData);
     }
-    void triggerField5(){
+
+    void triggerField5() throws InterruptedException {
         System.out.println("triggerField5");
+        Thread.sleep(9999);
         EXECUTOR_SERVICE.submit(this::saveList);
     }
 
 
-
     void assemblyData() {
-        authList = new ArrayList<>(1000);
-        AuthDemo authDemo = new AuthDemo();
-        do {
-            authDemo.setField2(field1.remove());
-            authDemo.setField1(field2.remove());
-            authDemo.setNode(node.remove());
-            authList.add(authDemo);
-        } while (authList.size() < 999);
-        authListList.add(authList);
-        System.out.println(authListList.size());
+        List<AuthDemo> authList = new Vector<>();
+        while (true) {
+            authList.clear();
+            if (count < 200000) {
+                do {
+                    AuthDemo authDemo = new AuthDemo();
+                    authDemo.setField2(field1s.remove());
+                    authDemo.setField1(field2s.remove());
+                    authDemo.setNode(nodes.remove());
+                    authList.add(authDemo);
+                    System.out.println(Thread.currentThread().getName() + ": assemblyData");
+                } while (authList.size() < 999);
+                authListList.offer(authList);
+            } else {
+                log.info("assemblyData + count:{}", count);
+            }
+        }
+
     }
 
     void saveField1() {
-        do {
-            field1.add(getUUID());
-        } while (count < 200000);
+        while (true) {
+            if (count < 200000) {
+                field1s.offer(getUUID());
+            } else {
+                log.info("saveField1 + count:{}", count);
+            }
+        }
     }
 
     void saveField2() {
-        do {
-            field2.add(getRandom());
-        } while (count < 200000);
+        while (true) {
+            if (count < 200000) {
+                field2s.offer(getRandom());
+            } else {
+                log.info("saveField2 + count:{}", count);
+            }
+        }
     }
 
     void saveNode() {
-        do {
-            node.add(getRandomAssign());
-        } while (count < 200000);
+        while (true) {
+            if (count < 200000) {
+                nodes.offer(getRandomAssign());
+            } else {
+                log.info("saveNode + count:{}", count);
+            }
+        }
     }
 
     void saveList() {
-        do {
-            if (authListList.size() > 0){
+        while (true) {
+            if (count < 200000 && authListList.size() > 1) {
                 this.saveBatch(authListList.remove());
-                count ++;
-                System.out.println("当前插入次数:" + count);
+                System.out.println(Thread.currentThread().getName() + ": saveBatch");
+                count++;
+                System.out.println("===============================================================");
+            } else {
+                System.out.printf("saveList:%d --- authListList:%d", count, authListList.size());
             }
-        } while (count < 200000 && authListList.size() > 1);
+        }
     }
 
     private String getUUID() {

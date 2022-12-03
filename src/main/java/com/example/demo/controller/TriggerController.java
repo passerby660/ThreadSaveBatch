@@ -19,7 +19,7 @@ public class TriggerController {
 
     @GetMapping
     public String insert() throws InterruptedException {
-        triggerService.insert2();
+        triggerService.insert();
         return "success";
     }
 }

@@ -6,6 +6,24 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    ##### ¡¨Ω”≥ÿ≈‰÷√ #######
+    druid:
+      filters: stat,wall,log4j2
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        login-username: admin
+        login-password: 123456
+
+  #### Redis
+  redis:
+    host: 127.0.0.1
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

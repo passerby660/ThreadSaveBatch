@@ -65,13 +65,13 @@ public class TriggerServiceImpl extends BaseServiceImpl<TriggerMapper, AuthDemo>
         EXECUTOR_SERVICE.submit(this::assemblyData);
         EXECUTOR_SERVICE.submit(this::assemblyData);
         EXECUTOR_SERVICE.submit(this::assemblyData);
-        EXECUTOR_SERVICE.submit(this::assemblyData);
-        EXECUTOR_SERVICE.submit(this::assemblyData);
     }
 
     void triggerField5() throws InterruptedException {
         System.out.println("triggerField5");
         Thread.sleep(9999);
+        EXECUTOR_SERVICE.submit(this::saveList);
+        EXECUTOR_SERVICE.submit(this::saveList);
         EXECUTOR_SERVICE.submit(this::saveList);
     }
 
@@ -87,7 +87,7 @@ public class TriggerServiceImpl extends BaseServiceImpl<TriggerMapper, AuthDemo>
                     authDemo.setField1(field2s.remove());
                     authDemo.setNode(nodes.remove());
                     authList.add(authDemo);
-                    System.out.println(Thread.currentThread().getName() + ": assemblyData");
+//                    System.out.println(Thread.currentThread().getName() + ": assemblyData");
                 } while (authList.size() < 999);
                 authListList.offer(authList);
             } else {

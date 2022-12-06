@@ -1,14 +1,13 @@
 package com.example.demo.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author elliott
@@ -28,6 +27,9 @@ public class AuthDemo implements Serializable {
     private String field2;
 
     private Integer node;
+
+    @TableField(fill = FieldFill.UPDATE)
+    private Date updateTime;
 
 
 }

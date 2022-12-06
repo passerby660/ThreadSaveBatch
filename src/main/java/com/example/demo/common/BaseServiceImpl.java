@@ -78,8 +78,8 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, 
 
         forModelSave(table, attrs, sql, parasNoUse);
         int[] result = batch(tClass, sql.toString(), columns.toString(), entityList, batchSize);
-        String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        log.info("插入了"+ result.length +"条数据,时间:" + format);
+//        String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+//        log.info("插入了"+ result.length +"条数据,时间:" + format);
         return result.length > 0;
     }
 
